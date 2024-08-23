@@ -10,12 +10,12 @@ export default function Hero(){
                 <div className="flex flex-col-reverse lg:flex-row justify-center items-center gap-16 lg:gap-4">
                     <div className="flex flex-col justify-center items-center lg:w-2/5">
                         
-                        <Image src={img1} alt="Vinicius Canhassi | Designer Gráfico" className="w-full" placeholder="blur"/>
+                        <Image src={img1} alt="Vinicius Canhassi | Designer Gráfico" className="w-full"/>
 
                     </div>
-                    <div className="flex flex-col gap-6 justify-center lg:w-3/5 ">
+                    <div className="flex flex-col gap-8 justify-center lg:w-3/5 ">
                         <h3 className="text-sm md:text-base text-center tracking-[0.6250em] italic">MEU NOME É</h3>
-                            <Image src={logo} alt="Vinicius Canhassi | Designer Gráfico" className="w-full" placeholder="blur"/>
+                            <Image src={logo} alt="Vinicius Canhassi | Designer Gráfico" className="w-full"/>
                         <h1 className="text-secondary text-2xl text-center tracking-[0.45em] italic"><span className="text-white">SOU</span> DESIGNER GRÁFICO</h1>
                         <button>
                             <Link 
@@ -26,7 +26,7 @@ export default function Hero(){
                                     hover:bg-white hover:text-primary hover:border-transparent transition-colors
                                 "
                             >
-                                Saiba mais
+                                Conheça meus projetos
                             </Link>
                         </button>
                     </div>

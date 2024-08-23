@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from 'react'
-import logo from "../../../public/images/vinicius-canhassi-portfolio.png"
-import { Bars3CenterLeftIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import logo from "../../../public/logo-vinicius-canhassi.svg"
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 import HandleScroll from './HandleScroll'
@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header className="bg-primary fixed w-full z-40">
-        <nav className="mx-auto max-w-screen-2xl p-4 lg:px-8 lg:py-8 flex items-center justify-between relative" aria-label="Global">
+        <nav className="mx-auto max-w-screen-2xl p-4 lg:px-8 lg:py-4 flex items-center justify-between relative" aria-label="Global">
             <div className="flex lg:flex-1">
                 <Link href="/">
                     <span className="sr-only">Vinicius Canhassi</span>
@@ -29,7 +29,7 @@ export default function Header() {
                             <Link 
                                 href={item.path} 
                                 className={`                                    
-                                    text-white font-bold relative z-20 hover:text-secondary
+                                    text-white font-bold tracking-wider relative z-20 hover:text-secondary
                                     ${activeSection === item.path.substring(1) ? "text-secondary" : ""}
                                 `}
                             >  
@@ -42,7 +42,7 @@ export default function Header() {
                             href="#contato"
                             aria-label='Contato' 
                             className='
-                                bg-secondary text-primary font-bold py-3 px-16 
+                                bg-secondary text-primary font-bold tracking-wider py-3 px-16 
                                 transition-colors hover:bg-white
                             '
                         >
@@ -58,7 +58,7 @@ export default function Header() {
                     onClick={() => setMobileMenuOpen(true)}
                 >
                     <span className="sr-only">Abrir menu</span>
-                    <Bars3CenterLeftIcon className="size-8 rotate-180 text-secondary" aria-hidden="true" />            
+                    <Bars3Icon className="size-8 rotate-180 text-secondary" aria-hidden="true" />            
                 </button>
             </div>
         </nav>
@@ -84,7 +84,7 @@ export default function Header() {
                             <Link 
                                 href={item.path} 
                                 className={`
-                                    text-white font-bold relative z-20 hover:text-secondary
+                                    text-white font-bold tracking-wider relative z-20 hover:text-secondary
                                     ${activeSection === item.path.substring(1) ? "text-secondary" : ""}
                                     `}
                                 onClick={() => setMobileMenuOpen(false)}
@@ -97,7 +97,7 @@ export default function Header() {
                     <Link 
                             href="#contato"
                             aria-label='Contato' 
-                            className='bg-secondary text-primary font-bold py-3 px-16'
+                            className='bg-secondary text-primary font-bold tracking-wider py-3 px-16'
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             CONTATO
