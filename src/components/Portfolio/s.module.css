@@ -4,3 +4,14 @@
   background-repeat: no-repeat;  
   background-position-y: bottom;
 }
+
+
+.over:hover h3 {
+  color: #ffffff;
+}
+.over:hover span {
+  color: #d6ae33;
+}
+.over:hover svg {
+  color: #ffffff;
+}

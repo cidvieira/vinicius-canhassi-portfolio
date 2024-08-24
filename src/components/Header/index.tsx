@@ -14,7 +14,7 @@ export default function Header() {
   const { activeSection } = HandleScroll()
 
   return (
-    <header className="bg-primary fixed w-full z-40">
+    <header className="bg-primary fixed w-full z-30">
         <nav className="mx-auto max-w-screen-2xl p-4 lg:px-8 lg:py-4 flex items-center justify-between relative" aria-label="Global">
             <div className="flex lg:flex-1">
                 <Link href="/">
@@ -58,7 +58,7 @@ export default function Header() {
                     onClick={() => setMobileMenuOpen(true)}
                 >
                     <span className="sr-only">Abrir menu</span>
-                    <Bars3Icon className="size-8 rotate-180 text-secondary" aria-hidden="true" />            
+                    <Bars3Icon className="size-8 text-secondary" aria-hidden="true" />            
                 </button>
             </div>
         </nav>
