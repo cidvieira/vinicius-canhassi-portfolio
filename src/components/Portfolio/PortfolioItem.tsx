@@ -7,15 +7,15 @@ import { PlayIcon } from "@heroicons/react/16/solid";
 
 interface PortfolioItemProps {
   item: PortfolioData;
-  onOpenModal: (item: PortfolioData) => void;
+  onOpenSlider: (item: PortfolioData) => void;
 }
 
-const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onOpenModal }) => {
+const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onOpenSlider }) => {
   return (
     <div
       key={item.title}
       className={`relative max-w-md`}
-      onClick={() => onOpenModal(item)}
+      onClick={() => onOpenSlider(item)}
     >
       <Image
         src={item.cover}

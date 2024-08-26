@@ -1,10 +1,9 @@
 .bgimg{
-  background-image: url("../../../public/portfolio/bg-portfolio.png");
+  background-image: url("../../../public/portfolio/bg-portfolio.webp");
   background-position: bottom;
   background-repeat: no-repeat;  
   background-position-y: bottom;
 }
-
 
 .over:hover h3 {
   color: #ffffff;

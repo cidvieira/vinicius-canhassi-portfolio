@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local'
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "./globals.css";
-import bgimg from "../../public/portfolio/bg-portfolio.png"
-import Image from "next/image";
 
 const lufga = localFont({
   src: [

@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { portfolio, PortfolioData } from "./Portfolio.data"
 import s from "./s.module.css"
 import Contact from "../Contact"
@@ -11,30 +10,30 @@ import PortfolioSlider from "./PortfolioSlider"
 export default function Portfolio(){
   const [selectedProject, setSelectedProject] = useState<PortfolioData | null>(null);  
 
-  const handleOpenModal = (item: PortfolioData) => {
+  const handleOpenSlider = (item: PortfolioData) => {
     setSelectedProject(item);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseSlider = () => {
     setSelectedProject(null);
   };
 
     return (
         <section id="portfolio" className={`relative ${s.bgimg}`}>
-            <div className="mx-auto max-w-screen-2xl px-4 lg:px-8 pt-4 lg:pt-28">
+            <div className="mx-auto max-w-screen-2xl px-4 lg:px-8 py-20 lg:py-28">
                 <h2 className="text-secondary text-center text-5xl pb-10"><span className="text-white">Meu</span> portfólio</h2>
                 <div className="flex flex-wrap flex-row gap-3 justify-center">
                     {portfolio.map((item) => (
-                        <PortfolioItem key={item.title} item={item} onOpenModal={handleOpenModal} />
+                        <PortfolioItem key={item.title} item={item} onOpenSlider={handleOpenSlider} />
                     ))}
                 </div>
             </div> 
 
             {selectedProject && (
                 <PortfolioSlider
-                    images={selectedProject.project}
+                    medias={selectedProject.project}
                     isOpen={true}
-                    onClose={handleCloseModal}
+                    onClose={handleCloseSlider}
                     category={selectedProject.category}
                     title={selectedProject.title}
                 />

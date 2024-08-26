@@ -1,6 +1,6 @@
 import Image from "next/image";
-import img1 from "../../public/images/vinicius-canhassi-01.png"
-import logo from "../../public/images/logo-vinicius-canhassi.png"
+import img1 from "../../public/images/vinicius-canhassi-01.webp"
+import logo from "../../public/images/logo-vinicius-canhassi.webp"
 import Link from "next/link";
 
 export default function Hero(){

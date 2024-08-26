@@ -1,5 +1,5 @@
 import Image from "next/image";
-import img1 from "../../public/images/vinicius-canhassi-02.png"
+import img1 from "../../public/images/vinicius-canhassi-02.webp"
 import Link from "next/link";
 
 export default function About(){

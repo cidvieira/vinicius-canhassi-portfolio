@@ -134,51 +134,39 @@ export const portfolio: Array<PortfolioData> = [
         ]
     },
     {
-        cover: "/portfolio/videos/01-capa-quartosetc.jpg", 
+        cover: "/portfolio/videos/quartos-etc/quartos-etc.webp", 
         category: "Vídeo",
         title: "Quartos etc.",
-        project: [
-
-        ]
+        project:[ "/portfolio/videos/quartos-etc/quartos-etc.mp4"]
     },
     {
-        cover: "/portfolio/videos/01-capa-quartosetc.jpg", 
+        cover: "/portfolio/videos/instalacao-de-piso/instalacao-de-piso.webp", 
         category: "Vídeo",
-        title: "Quartos etc.",
-        project: [
-
-        ]
+        title: "Instalação de Piso",
+        project:["/portfolio/videos/instalacao-de-piso/instalacao-de-piso.mp4"]
     },
     {
-        cover: "/portfolio/videos/01-capa-quartosetc.jpg", 
+        cover: "/portfolio/videos/produto/produto.webp", 
         category: "Vídeo",
-        title: "Quartos etc.",
-        project: [
-
-        ]
+        title: "Produto",
+        project:["/portfolio/videos/produto/produto.mp4"]
     },
     {
-        cover: "/portfolio/videos/01-capa-quartosetc.jpg", 
+        cover: "/portfolio/videos/gamma-tattoo/gamma-tattoo.webp", 
         category: "Vídeo",
-        title: "Quartos etc.",
-        project: [
-
-        ]
+        title: "Gamma Tattoo",
+        project:["/portfolio/videos/gamma-tattoo/gamma-tattoo.mp4"]
     },
     {
-        cover: "/portfolio/videos/01-capa-quartosetc.jpg", 
+        cover: "/portfolio/videos/feira-de-ciencias/feira-de-ciencias.webp", 
         category: "Vídeo",
-        title: "Quartos etc.",
-        project: [
-
-        ]
+        title: "Feira de Ciências",
+        project:["/portfolio/videos/feira-de-ciencias/feira-de-ciencias.mp4"]
     },
     {
-        cover: "/portfolio/videos/01-capa-quartosetc.jpg", 
+        cover: "/portfolio/videos/dia-das-maes/dia-das-maes.webp", 
         category: "Vídeo",
-        title: "Quartos etc.",
-        project: [
-
-        ]
+        title: "Dia das Mães",
+        project:["/portfolio/videos/dia-das-maes/dia-das-maes.mp4"]
     },
 ]
