@@ -1,11 +1,10 @@
 import Image from "next/image";
 import img1 from "../../public/images/vinicius-canhassi-02.webp"
-import Link from "next/link";
 
 export default function About(){
     return (
         <section id="sobre-mim">
-            <div className="mx-auto max-w-screen-2xl px-4 lg:px-8 py-20 lg:pt-[72px] lg:pb-28 border-t-[40px] border-secondary">
+            <div className="mx-auto max-w-screen-2xl px-4 lg:px-8 pt-20 lg:pt-28">
                 <div className="flex flex-col lg:flex-row justify-center gap-16 lg:gap-4">
                     <div className="flex flex-col justify-center gap-10 lg:w-1/2">
                         <h2 className="text-secondary text-5xl">Sobre <span className="text-white">mim</span></h2>                        
@@ -18,7 +17,7 @@ export default function About(){
                         </p>
                     </div>
                     <div className="flex flex-col justify-center items-center lg:w-1/2">
-                        <Image src={img1} alt="Vinicius Canhassi | Designer Gráfico" className="w-full"/>
+                        <Image src={img1} alt="Vinicius Canhassi | Designer Gráfico" className="w-full max-w-xl"/>
                     </div>
                 </div>                
             </div>

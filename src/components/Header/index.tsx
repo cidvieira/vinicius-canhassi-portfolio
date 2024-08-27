@@ -23,7 +23,7 @@ export default function Header() {
                 </Link>
             </div>
             <div className="hidden lg:block">
-                <ul className="flex gap-32">
+                <ul className="flex gap-32 lg:gap-24 xl:gap-32">
                     {titleLink.map((item, index) => (
                         <li key={index}>
                             <Link 

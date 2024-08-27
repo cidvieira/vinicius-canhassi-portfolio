@@ -17,7 +17,7 @@ export default function Contact(){
                     </Link>
 
                     <Link href="mailto:canhassi.designer@gmail.com" target="_blank" aria-label="E-mail" className="flex flex-col gap-8 place-items-center p-4 min-w-[260px] hover:text-white transition-colors">
-                        <Image src={email} alt="E-mail"/>
+                        <Image src={email} alt="E-mail" className="mt-[10px]"/>
                         canhassi.designer@gmail.com
                     </Link>
 
