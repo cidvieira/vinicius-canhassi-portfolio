@@ -57,7 +57,7 @@ const PortfolioSlider: React.FC<SlideItemProps> = ({ medias, isOpen, onClose, ca
         className={`fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-90 z-40 transition-all`}>        
       </div>
 
-      <div className={`relative max-w-96 sm:max-w-sm md:max-w-2xl mx-4 lg:mx-0 z-50 transition-all`}>
+      <div className={`relative max-w-96 sm:max-w-sm md:max-w-2xl xl:max-w-[720px] mx-4 lg:mx-0 z-50 transition-all`}>
 
         <Slider {...settings}  ref={sliderRef} className={category === "Vídeo" ? "video" : ""}>
           {medias.map((media, index) => (

@@ -8,7 +8,7 @@ export interface PortfolioData {
 export const portfolio: Array<PortfolioData> = [
     {
         cover: "/portfolio/cafe-aurora/cafe-aurora-01.webp", 
-        category: "Projeto",
+        category: "Branding",
         title: "Café Aurora",
         project: [
             "/portfolio/cafe-aurora/cafe-aurora-01.webp",
@@ -22,7 +22,7 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/quintal-granulato/quintal-granulato-01.webp", 
-        category: "Projeto",
+        category: "Branding",
         title: "Quintal Granulato",
         project: [
             "/portfolio/quintal-granulato/quintal-granulato-01.webp",
@@ -35,8 +35,8 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/cerveja-grb/cerveja-grb-01.webp", 
-        category: "Projeto",
-        title: "Cerveja GRB",
+        category: "Rótulos",
+        title: "Cerveja Garagem Rock Baden",
         project: [
             "/portfolio/cerveja-grb/cerveja-grb-01.webp",
             "/portfolio/cerveja-grb/cerveja-grb-02.webp",
@@ -47,7 +47,7 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/coelho-shop/coelho-shop-01.webp", 
-        category: "Projeto",
+        category: "Rebranding",
         title: "Coelho Shop",
         project: [
             "/portfolio/coelho-shop/coelho-shop-01.webp",
@@ -64,8 +64,8 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/cf-barakat/cf-barakat-01.webp", 
-        category: "Projeto",
-        title: "CF Barakat",
+        category: "Catálogo",
+        title: "Coleção Barakat",
         project: [  
             "/portfolio/cf-barakat/cf-barakat-01.webp",
             "/portfolio/cf-barakat/cf-barakat-02.webp",
@@ -80,7 +80,7 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/doce-festa/doce-festa-01.webp", 
-        category: "Projeto",
+        category: "Catálogo",
         title: "Doce Festa",
         project: [
             "/portfolio/doce-festa/doce-festa-01.webp",
@@ -97,7 +97,7 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/social-media/social-media-01.webp", 
-        category: "Projeto",
+        category: "Artes",
         title: "Social Media",
         project: [
             "/portfolio/social-media/social-media-01.webp",
@@ -114,8 +114,8 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/cardapio-coronel-mostarda/cardapio-coronel-mostarda-01.webp", 
-        category: "Projeto",
-        title: "Cardápio Coronel Mostarda",
+        category: "Cardápio",
+        title: "Coronel Mostarda",
         project: [
             "/portfolio/cardapio-coronel-mostarda/cardapio-coronel-mostarda-01.webp",
             "/portfolio/cardapio-coronel-mostarda/cardapio-coronel-mostarda-02.webp",
@@ -125,8 +125,8 @@ export const portfolio: Array<PortfolioData> = [
     },
     {
         cover: "/portfolio/cardapio-a-cozinha-da-lu/cardapio-a-cozinha-da-lu-01.webp", 
-        category: "Projeto",
-        title: "Cardápio A Cozinha da Lú",
+        category: "Cardápio",
+        title: "A Cozinha da Lú",
         project: [
             "/portfolio/cardapio-a-cozinha-da-lu/cardapio-a-cozinha-da-lu-01.webp",
             "/portfolio/cardapio-a-cozinha-da-lu/cardapio-a-cozinha-da-lu-02.webp",

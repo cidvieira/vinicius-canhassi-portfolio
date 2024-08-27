@@ -22,7 +22,7 @@ export default function Portfolio(){
         <section id="portfolio" className={`relative ${s.bgimg}`}>
             <div className="mx-auto max-w-screen-2xl px-4 lg:px-8 py-20 lg:py-28">
                 <h2 className="text-secondary text-center text-5xl pb-10"><span className="text-white">Meu</span> portfólio</h2>
-                <div className="flex flex-wrap flex-row gap-3 justify-center">
+                <div className="flex flex-wrap flex-row justify-center">
                     {portfolio.map((item) => (
                         <PortfolioItem key={item.title} item={item} onOpenSlider={handleOpenSlider} />
                     ))}
