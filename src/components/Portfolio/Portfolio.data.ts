@@ -7,6 +7,19 @@ export interface PortfolioData {
 
 export const portfolio: Array<PortfolioData> = [
     {
+        cover: "/portfolio/gamma-tattoo/gamma-tattoo-01.webp", 
+        category: "Rebranding",
+        title: "Gamma Tattoo",
+        project:[
+            "/portfolio/gamma-tattoo/gamma-tattoo-01.webp",
+            "/portfolio/gamma-tattoo/gamma-tattoo-02.webp",
+            "/portfolio/gamma-tattoo/gamma-tattoo-03.webp",
+            "/portfolio/gamma-tattoo/gamma-tattoo-04.webp",
+            "/portfolio/gamma-tattoo/gamma-tattoo-05.webp",
+            "/portfolio/gamma-tattoo/gamma-tattoo-06.webp"
+        ]
+    },
+    {
         cover: "/portfolio/cafe-aurora/cafe-aurora-01.webp", 
         category: "Branding",
         title: "Café Aurora",
@@ -134,6 +147,24 @@ export const portfolio: Array<PortfolioData> = [
         ]
     },
     {
+        cover: "/portfolio/videos/produto/enxoval/enxoval.webp", 
+        category: "Vídeo",
+        title: "Produto - Enxoval",
+        project:["/portfolio/videos/produto/enxoval/enxoval.mp4"]
+    },
+    {
+        cover: "/portfolio/videos/produto/tapetes-bangaran/tapetes-bangaran.webp", 
+        category: "Vídeo",
+        title: "Produto - Tapetes Bangaran",
+        project:["/portfolio/videos/produto/tapetes-bangaran/tapetes-bangaran.mp4"]
+    },
+    {
+        cover: "/portfolio/videos/produto/tapetes-nomade/tapetes-nomade.webp", 
+        category: "Vídeo",
+        title: "Produto - Tapetes Nomade",
+        project:["/portfolio/videos/produto/tapetes-nomade/tapetes-nomade.mp4"]
+    },
+    {
         cover: "/portfolio/videos/quartos-etc/quartos-etc.webp", 
         category: "Vídeo",
         title: "Quartos etc.",
@@ -146,16 +177,10 @@ export const portfolio: Array<PortfolioData> = [
         project:["/portfolio/videos/instalacao-de-piso/instalacao-de-piso.mp4"]
     },
     {
-        cover: "/portfolio/videos/produto/produto.webp", 
+        cover: "/portfolio/videos/produto/tapetes-punjab/tapetes-punjab.webp", 
         category: "Vídeo",
-        title: "Produto",
-        project:["/portfolio/videos/produto/produto.mp4"]
-    },
-    {
-        cover: "/portfolio/videos/gamma-tattoo/gamma-tattoo.webp", 
-        category: "Vídeo",
-        title: "Gamma Tattoo",
-        project:["/portfolio/videos/gamma-tattoo/gamma-tattoo.mp4"]
+        title: "Produto - Tapetes Punjab",
+        project:["/portfolio/videos/produto/tapetes-punjab/tapetes-punjab.mp4"]
     },
     {
         cover: "/portfolio/videos/feira-de-ciencias/feira-de-ciencias.webp", 
