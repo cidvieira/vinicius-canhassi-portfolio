@@ -14,7 +14,7 @@ const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onOpenSlider }) => 
   return (
     <div
       key={item.title}
-      className={`relative md:w-1/3 p-2`}
+      className={`relative w-1/2 md:w-1/3 p-2`}
       onClick={() => onOpenSlider(item)}
     >
       <Image

@@ -1,11 +1,9 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
-import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from "@heroicons/react/16/solid"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import Image from 'next/image'
 import Slider from "react-slick";
-import s from "./s.module.css"
 import { NextArrow, PrevArrow } from './SliderArrows'
 
 interface SlideItemProps {
