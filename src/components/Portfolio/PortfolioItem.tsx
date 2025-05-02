@@ -27,13 +27,13 @@ const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onOpenSlider }) => 
       <div
         className={`${s.over} absolute top-2 w-[calc(100%_-_16px)] h-[calc(100%_-_16px)]  hover:bg-black hover:bg-opacity-90 transition-all cursor-pointer`}
       >
-        <div className={`absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-2/4 px-4 flex flex-col gap-3 justify-center items-center w-full`}>
-          <span className="text-xl text-transparent transition-all">{`${item.category}`}</span>
-          <h3 className={`text-2xl text-center text-transparent transition-all`}>
+        <div className={`absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-2/4 px-4 flex flex-col gap-1 md:gap-3 justify-center items-center w-full`}>
+          <span className="text-xs sm:text-xl text-transparent transition-all">{`${item.category}`}</span>
+          <h3 className={`text-sm sm:text-2xl text-center text-transparent transition-all`}>
             {`${item.title}`} 
           </h3>
           <PlayIcon
-            className={`size-24 text-transparent opacity-60 transition-all ${
+            className={`size-[3rem] lg:size-24 text-transparent opacity-60 transition-all ${
               item.category === "Vídeo" ? "block" : "hidden"
             }`}
           />
