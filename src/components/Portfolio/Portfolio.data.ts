@@ -224,7 +224,7 @@ export const portfolio: Array<PortfolioData> = [
         type: "video",
         cover: "/portfolio/videos/instalacao-cortina/instalacao-cortina.webp", 
         category: "Vídeo",
-        title: "Instalaçãoo Cortina",
+        title: "Instalação Cortina",
         project:["/portfolio/videos/instalacao-cortina/instalacao-cortina.mp4"]
     },
     {
