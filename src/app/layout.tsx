@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import localFont from 'next/font/local'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./globals.css";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const lufga = localFont({
   src: [
@@ -27,7 +30,41 @@ const lufga = localFont({
 
 export const metadata: Metadata = {
   title: "Vinicius Canhassi | Designer Gráfico",
-  description: "Vinicius Canhassi | Designer Gráfico",
+  description: "Designer gráfico com especialização em branding e uma vasta experiência na criação de catálogos, gravações e edições de vídeos, desenvolvimento de cardápios, além de todo tipo de material impresso e digital.",
+  openGraph: {
+    title: "Vinicius Canhassi | Designer Gráfico",
+    description: "Designer gráfico com especialização em branding e uma vasta experiência na criação de catálogos, gravações e edições de vídeos, desenvolvimento de cardápios, além de todo tipo de material impresso e digital.",
+    url: 'https://www.viniciuscanhassi.com.br',
+    siteName: 'Vinicius Canhassi | Designer Gráfico',
+    images: [
+      {
+        url: 'https://www.viniciuscanhassi.com.br/vinicius-canhassi-designer-grafico.jpg',
+        width: 1200,
+        height: 630,
+        type: 'image/jpg',
+        alt: 'Vinicius Canhassi | Designer Gráfico'
+      }
+    ],
+    locale: 'pt-BR',
+    type: 'website',
+  },
+  alternates: {
+    canonical: 'https://www.viniciuscanhassi.com.br',
+  },
+  verification: {
+    google: '1ewMWQ2ad2zCwwK7uzzH_uKUH-aN-GDm8Codb5JVVic',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -37,10 +74,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="scroll-smooth">
+      <GoogleAnalytics />
       <body className={`bg-primary text-white relative ${lufga.className}`}>
         
         {children}
-        
+        <Analytics/>
+        <SpeedInsights/>
       </body>
     </html>
   );

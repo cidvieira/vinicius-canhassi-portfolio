@@ -23,18 +23,37 @@ export default function Header() {
                 </Link>
             </div>
             <div className="hidden lg:block">
-                <ul className="flex gap-32 lg:gap-24 xl:gap-32">
+                <ul className="flex items-center gap-32 lg:gap-24 xl:gap-32">
                     {titleLink.map((item, index) => (
-                        <li key={index}>
+                        <li key={index} className={`${item.title === "Portfólio" ? "group" : ""} relative py-4`}>
                             <Link 
                                 href={item.path} 
                                 className={`                                    
-                                    text-white font-bold tracking-wider relative z-20 hover:text-secondary
+                                    uppercase text-white font-bold tracking-wider relative z-20 hover:text-secondary
                                     ${activeSection === item.path.substring(1) ? "text-secondary" : ""}
                                 `}
                             >  
                                 {item.title}
                             </Link>
+                            {item.submenu === undefined ? null : 
+                                <ul className="hidden group-hover:flex flex-col justify-center items-center absolute left-1/2 -translate-x-1/2 mt-4 py-4 w-52 bg-primary border-[thin] border-secondary 
+                                before:absolute before:size-4 before:bg-primary before:-top-2 before:left-[calc(50%_-_8px)] before:rotate-45 before:border-[1px] before:border-t-secondary before:border-l-secondary before:border-b-primary before:border-r-primary">
+                                    {item.submenu.map((i, index) => (
+                                        <li key={index} className="text-white font-bold tracking-wider relative z-20 hover:text-secondary px-3 py-2">
+                                            <Link 
+                                                href={i.path}
+                                                title={i.title}
+                                                className={`                                    
+                                                    uppercase text-white text-center font-bold tracking-wider relative z-20 hover:text-secondary
+                                                    ${activeSection === item.path.substring(1) ? "text-secondary" : ""}
+                                                `}                                                     
+                                            >  
+                                                {i.title}                      
+                                            </Link>
+                                        </li>                              
+                                    ))}         
+                                </ul>
+                            }
                         </li>  
                     ))}
                     <li>
@@ -80,17 +99,37 @@ export default function Header() {
             <nav className="grid justify-center place-content-center h-[calc(100vh_-_5rem)]">
                 <ul className="flex flex-col items-center gap-14 my-8 ">
                     {titleLink.map((item, index) => (
-                        <li key={index} className="px-2">
+                        <li key={index} className="px-2 text-center">
                             <Link 
                                 href={item.path} 
                                 className={`
-                                    text-white font-bold tracking-wider relative z-20 hover:text-secondary
+                                    uppercase text-white font-bold tracking-wider relative z-20 hover:text-secondary
                                     ${activeSection === item.path.substring(1) ? "text-secondary" : ""}
                                     `}
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 {item.title}
                             </Link>
+                            {item.submenu === undefined ? null : 
+                                <ul className="flex flex-col justify-center items-center gap-3 relative mt-4 py-4 w-52 bg-primary border-[thin] border-secondary 
+                                before:absolute before:size-4 before:bg-primary before:-top-2 before:left-[calc(50%_-_8px)] before:rotate-45 before:border-[1px] before:border-t-secondary before:border-l-secondary before:border-b-primary before:border-r-primary">
+                                    {item.submenu.map((i, index) => (
+                                        <li key={index} className="px-3">
+                                            <Link 
+                                                href={i.path}
+                                                title={i.title}
+                                                className={`
+                                                    uppercase text-white font-bold tracking-wider relative z-20 hover:text-secondary
+                                                    ${activeSection === item.path.substring(1) ? "text-secondary" : ""}
+                                                    `}
+                                                onClick={() => setMobileMenuOpen(false)} 
+                                            >  
+                                                {i.title}        
+                                            </Link>
+                                        </li>                              
+                                    ))}         
+                                </ul>
+                                }
                         </li>  
                     ))}
                     <li className="pt-4">

@@ -1,20 +1,31 @@
 interface TitleLinkMenuData {
     title: string
     path: string
+    submenu?: TitleLinkMenuData[]
 }
 
 export const titleLink: Array<TitleLinkMenuData> = [
     {
-        title: 'INÍCIO',
+        title: 'Início',
         path: '#top'
     },
     {
-        title: 'SOBRE MIM',
+        title: 'Sobre Mim',
         path: '#sobre-mim'
     },
     {
-        title: 'PORTFÓLIO',
-        path: '#portfolio'
+        title: 'Portfólio',
+        path: '#portfolio',
+        submenu: [
+            {
+                title: 'DESIGN GRÁFICO',
+                path: '#portfolio'
+            },
+            {
+                title: 'Vídeos',
+                path: '#videos'
+            }
+        ]
     }   
 ] 
 
