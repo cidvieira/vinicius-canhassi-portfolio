@@ -5,7 +5,7 @@ import localFont from 'next/font/local'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./globals.css";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const lufga = localFont({
   src: [
@@ -74,13 +74,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="scroll-smooth">
-      <GoogleAnalytics />
-      <body className={`bg-primary text-white relative ${lufga.className}`}>
-        
+      <body className={`bg-primary text-white relative ${lufga.className}`}>        
         {children}
         <Analytics/>
         <SpeedInsights/>
       </body>
+      <GoogleAnalytics gaId="G-GYQRB79T13" />
     </html>
   );
 }
