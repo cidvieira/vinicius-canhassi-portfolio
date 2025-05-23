@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function Hero(){
     return (
         <section id="top">
-            <div className="mx-auto max-w-screen-2xl pt-24 lg:h-screen">
+            <div className="mx-auto max-w-screen-2xl pt-32">
                 <div className="flex flex-col-reverse lg:flex-row justify-center items-center gap-16 lg:gap-4 px-4 lg:px-8 border-b-[40px] border-secondary">
                     <div className="flex flex-col justify-center items-center lg:w-2/5">                        
                         <Image src={img1} alt="Vinicius Canhassi | Designer Gráfico" className="w-full max-w-lg"/>
