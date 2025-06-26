@@ -9,6 +9,22 @@ export interface PortfolioData {
 export const portfolio: Array<PortfolioData> = [
     {
         type: "art",
+        cover: "/portfolio/entrelinhas/entrelinhas-01.webp", 
+        category: "Branding",
+        title: "Entrelinhas",
+        project: [
+            "/portfolio/entrelinhas/entrelinhas-01.webp",
+            "/portfolio/entrelinhas/entrelinhas-02.webp",
+            "/portfolio/entrelinhas/entrelinhas-03.webp",
+            "/portfolio/entrelinhas/entrelinhas-04.webp",
+            "/portfolio/entrelinhas/entrelinhas-05.webp",
+            "/portfolio/entrelinhas/entrelinhas-06.webp",
+            "/portfolio/entrelinhas/entrelinhas-07.webp",
+            "/portfolio/entrelinhas/entrelinhas-08.webp",
+        ]
+    },
+    {
+        type: "art",
         cover: "/portfolio/gamma-tattoo/gamma-tattoo-01.webp", 
         category: "Rebranding",
         title: "Gamma Tattoo",
