@@ -9,6 +9,20 @@ export interface PortfolioData {
 export const portfolio: Array<PortfolioData> = [
     {
         type: "art",
+        cover: "/portfolio/iande-velas/iande-velas-01.webp", 
+        category: "Branding",
+        title: "Iandé Velas",
+        project: [
+            "/portfolio/iande-velas/iande-velas-01.webp",
+            "/portfolio/iande-velas/iande-velas-02.webp",
+            "/portfolio/iande-velas/iande-velas-03.webp",
+            "/portfolio/iande-velas/iande-velas-04.webp",
+            "/portfolio/iande-velas/iande-velas-05.webp",
+            "/portfolio/iande-velas/iande-velas-06.webp",
+        ]
+    },
+    {
+        type: "art",
         cover: "/portfolio/entrelinhas/entrelinhas-01.webp", 
         category: "Branding",
         title: "Entrelinhas",
