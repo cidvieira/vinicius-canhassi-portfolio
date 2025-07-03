@@ -299,18 +299,4 @@ export const portfolio: Array<PortfolioData> = [
         title: "Produto - Tapetes Punjab",
         project:["/portfolio/videos/produto/tapetes-punjab/tapetes-punjab.mp4"]
     },
-    {
-        type: "video",
-        cover: "/portfolio/videos/feira-de-ciencias/feira-de-ciencias.webp", 
-        category: "Vídeo",
-        title: "Feira de Ciências",
-        project:["/portfolio/videos/feira-de-ciencias/feira-de-ciencias.mp4"]
-    },
-    {
-        type: "video",
-        cover: "/portfolio/videos/dia-das-maes/dia-das-maes.webp", 
-        category: "Vídeo",
-        title: "Dia das Mães",
-        project:["/portfolio/videos/dia-das-maes/dia-das-maes.mp4"]
-    },
 ]

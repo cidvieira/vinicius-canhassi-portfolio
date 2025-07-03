@@ -70,7 +70,6 @@ const PortfolioSlider: React.FC<SlideItemProps> = ({ medias, isOpen, onClose, ca
               <Image
                 src={media}
                 alt={`${category} ${title} ${index + 1}`}
-                className=""
                 width={1000}
                 height={800}
               />

@@ -15,7 +15,7 @@ export default function About(){
                         </p>
                     </div>
                     <div className="flex flex-col justify-center items-center lg:w-1/2">
-                        <Image src={img1} alt="Vinicius Canhassi | Designer Gráfico" className="w-full max-w-xl"/>
+                        <Image src={img1} alt="Vinicius Canhassi | Designer Gráfico"/>
                     </div>
                 </div>                
             </div>
