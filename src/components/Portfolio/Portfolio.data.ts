@@ -9,6 +9,22 @@ export interface PortfolioData {
 export const portfolio: Array<PortfolioData> = [
     {
         type: "art",
+        cover: "/portfolio/bri-de-la-ru/bri-de-la-ru-01.webp", 
+        category: "Branding",
+        title: "Bri de Lá Ru",
+        project: [
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-01.webp",
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-02.webp",
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-03.webp",
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-04.webp",
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-05.webp",
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-06.webp",
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-07.webp",
+            "/portfolio/bri-de-la-ru/bri-de-la-ru-08.webp",
+        ]
+    },
+    {
+        type: "art",
         cover: "/portfolio/iande-velas/iande-velas-01.webp", 
         category: "Branding",
         title: "Iandé Velas",
