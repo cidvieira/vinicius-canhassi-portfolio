@@ -9,6 +9,21 @@ export interface PortfolioData {
 export const portfolio: Array<PortfolioData> = [
     {
         type: "art",
+        cover: "/portfolio/garagem-7-detailing/garagem-7-detailing-01.webp", 
+        category: "Rebranding",
+        title: "Garagem 7 Detailing",
+        project: [
+            "/portfolio/garagem-7-detailing/garagem-7-detailing-01.webp",
+            "/portfolio/garagem-7-detailing/garagem-7-detailing-02.webp",
+            "/portfolio/garagem-7-detailing/garagem-7-detailing-03.webp",
+            "/portfolio/garagem-7-detailing/garagem-7-detailing-04.webp",
+            "/portfolio/garagem-7-detailing/garagem-7-detailing-05.webp",
+            "/portfolio/garagem-7-detailing/garagem-7-detailing-06.webp",
+            "/portfolio/garagem-7-detailing/garagem-7-detailing-07.webp",
+        ]
+    },
+    {
+        type: "art",
         cover: "/portfolio/bri-de-la-ru/bri-de-la-ru-01.webp", 
         category: "Branding",
         title: "Bri de Lá Ru",
