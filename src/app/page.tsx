@@ -8,16 +8,16 @@ import Portfolio from "@/components/Portfolio";
 
 export default function Home() {
   return (
-    <main>
-      <Header />
-
+    <>
+    <Header />
+    <main className="bg-primary text-white">
       <Hero />
 
       <About />
 
-      <Portfolio />
-
-      <Footer /> 
+      <Portfolio />      
     </main>
+    <Footer /> 
+    </>
   );
 }

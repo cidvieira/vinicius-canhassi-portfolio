@@ -74,7 +74,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="scroll-smooth">
-      <body className={`bg-primary text-white relative ${lufga.className}`}>        
+      <body className={`relative ${lufga.className}`}>        
         {children}
         <Analytics/>
         <SpeedInsights/>
