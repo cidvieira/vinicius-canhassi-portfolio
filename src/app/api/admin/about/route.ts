@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from "@/lib/auth";
 import { PrismaClient } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 
 const ABOUT_ME_ID = 1;
 
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
         update: { content },
         create: { id: ABOUT_ME_ID, content },
         });
-
+        revalidatePath('/');
         return NextResponse.json(updatedAboutMe);
     } catch (error) {
         console.error("Erro ao criar projeto de vídeo:", error);

@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from "@/lib/auth";
 import { del } from '@vercel/blob';
 import { PrismaClient } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+
 
 export async function GET(
   request: Request,
@@ -67,7 +69,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         images: true,
       },
     });
-
+    revalidatePath('/');
     return NextResponse.json(updatedProject);
   } catch (error) {
       console.error("Erro ao atualizar projeto de arte:", error);
@@ -112,7 +114,7 @@ export async function DELETE(
         data: { order: { decrement: 1 } },
       });
     });
-
+    revalidatePath('/');
     return new NextResponse(null, { status: 204 }); 
   } catch (error: any) {
     console.error("Erro ao deletar projeto de arte:", error);

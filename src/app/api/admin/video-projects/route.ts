@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from "@/lib/auth";
 import { PrismaClient } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
   const prisma = new PrismaClient();
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
         data: { title, videoUrl, thumbnailUrl, order: 0 },
       }),
     ]);
-
+    revalidatePath('/');
     return NextResponse.json(newProject, { status: 201 });
   } catch (error) {
     console.error("Erro ao criar projeto de vídeo:", error);
@@ -56,6 +57,7 @@ export async function PATCH(request: Request) {
     const projectsToUpdate: { id: string; order: number }[] = await request.json();
     const transaction = projectsToUpdate.map(p => prisma.videoProject.update({ where: { id: p.id }, data: { order: p.order } }));
     await prisma.$transaction(transaction);
+    revalidatePath('/');
     return NextResponse.json({ message: 'Ordem atualizada' });
   } catch (error) { return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 }); }
 }

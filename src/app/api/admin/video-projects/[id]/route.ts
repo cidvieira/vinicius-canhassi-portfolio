@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from "@/lib/auth";
 import { del } from '@vercel/blob';
 import { PrismaClient } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const prisma = new PrismaClient();
@@ -17,6 +18,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       where: { id },
       data: { title, videoUrl, thumbnailUrl },
     });
+    revalidatePath('/');
     return NextResponse.json(updatedProject);
   } catch (error) {
         console.error("Erro ao atualizar projeto de vídeo:", error);
@@ -62,7 +64,7 @@ export async function DELETE(
         data: { order: { decrement: 1 } },
       });
     });
-
+    revalidatePath('/');
     return new NextResponse(null, { status: 204 }); 
   } catch (error: any) {
     console.error("Erro ao deletar projeto de vídeo:", error);
