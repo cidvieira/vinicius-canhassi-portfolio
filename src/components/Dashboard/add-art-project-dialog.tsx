@@ -75,7 +75,6 @@ export function AddArtProjectDialog({ open, onOpenChange, onAdd }: AddArtProject
       images: imageFiles,
     })
 
-    // Reset form
     setTitle("")
     setSubtitle("")
     setImageFiles([])
@@ -158,7 +157,7 @@ export function AddArtProjectDialog({ open, onOpenChange, onAdd }: AddArtProject
                 <div className="space-y-2">
                   <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
                   <div className="flex flex-col items-center gap-1">
-                    <Label htmlFor="image-upload" className="cursor-pointer text-primary hover:underline">
+                    <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
                       Clique para fazer upload ou arraste as imagens aqui
                     </Label>
                     <p className="text-xs text-muted-foreground">PNG, JPG, WEBP *WebP melhora a velocidade e eficiência.</p>

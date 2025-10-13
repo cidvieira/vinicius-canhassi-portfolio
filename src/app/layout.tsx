@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "./globals.css";
 import { GoogleAnalytics } from '@next/third-parties/google'
 
+
 const lufga = localFont({
   src: [
     {
@@ -75,7 +76,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="scroll-smooth">
       <body className={`relative ${lufga.className}`}>        
-        {children}
+        {children}              
         <Analytics/>
         <SpeedInsights/>
       </body>

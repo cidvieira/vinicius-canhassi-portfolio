@@ -7,77 +7,66 @@ import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Label } from "@/components/Dashboard/ui/label"
 import { Save, X } from "lucide-react"
-import type { VideoProject } from "@/app/dashboard/projetos-video/page"
+import type { VideoProject } from "@/app/admin/dashboard/projetos-video/page"
 
 interface EditVideoProjectDialogProps {
   project: VideoProject
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSave: (project: VideoProject) => void
+  onSave: (project: VideoProject, newFiles?: { videoFile?: File; thumbFile?: File }) => void
+  uploadProgress: number | null;
 }
 
-export function EditVideoProjectDialog({ project, open, onOpenChange, onSave }: EditVideoProjectDialogProps) {
+export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, uploadProgress }: EditVideoProjectDialogProps) {
   const [title, setTitle] = useState("")
-  const [videoFile, setVideoFile] = useState<File | null>(null)
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+  const [newVideoFile, setNewVideoFile] = useState<File | null>(null)
+  const [newThumbFile, setNewThumbFile] = useState<File | null>(null)
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("")
-  const [currentVideoFile, setCurrentVideoFile] = useState<string>("")
-  const [currentThumbnail, setCurrentThumbnail] = useState<string>("")
 
   useEffect(() => {
-    if (project) {
+    if (project && open) {
       setTitle(project.title)
-      setCurrentVideoFile(project.videoFile)
-      setCurrentThumbnail(project.thumbnailUrl)
-      setThumbnailPreview(project.thumbnailUrl)
+      setThumbnailPreview(project.thumbnailUrl || "")      
+      setNewVideoFile(null)
+      setNewThumbFile(null)
     }
-  }, [project])
+  }, [project, open])
 
   const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file && file.type.startsWith("video/")) {
-      setVideoFile(file)
+      setNewVideoFile(file)
     }
   }
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file && file.type.startsWith("image/")) {
-      setThumbnailFile(file)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setThumbnailPreview(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
+      setNewThumbFile(file)
+      setThumbnailPreview(URL.createObjectURL(file))
     }
   }
 
   const removeThumbnail = () => {
-    setThumbnailFile(null)
-    setThumbnailPreview("")
-    setCurrentThumbnail("")
+    setNewThumbFile(null)
+    setThumbnailPreview("") 
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!title.trim()) return
 
-    // Usar novo arquivo de vídeo se foi selecionado, senão manter o atual
-    const finalVideoFile = videoFile ? URL.createObjectURL(videoFile) : currentVideoFile
-
-    // Usar nova imagem se foi selecionada, senão manter a atual
-    const finalThumbnail = thumbnailFile
-      ? URL.createObjectURL(thumbnailFile)
-      : currentThumbnail ||
-        `/placeholder.svg?height=180&width=320&query=${encodeURIComponent(`${title} video thumbnail`)}`
-
-    onSave({
+    const updatedProject: VideoProject = {
       ...project,
       title: title.trim(),
-      videoFile: finalVideoFile,
-      thumbnailUrl: finalThumbnail,
-    })
+    }
+
+    const newFiles = {
+      videoFile: newVideoFile || undefined,
+      thumbFile: newThumbFile || undefined,
+    }
+
+    onSave(updatedProject, newFiles)    
   }
 
   return (
@@ -85,7 +74,7 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave }: 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Editar Projeto de Vídeo</DialogTitle>
-          <DialogDescription>Edite as informações do projeto de vídeo</DialogDescription>
+          <DialogDescription>Edite o título e, opcionalmente, substitua o vídeo ou a capa.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -101,63 +90,61 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave }: 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-video-file">Alterar Arquivo de Vídeo (opcional)</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="edit-video-file"
-                type="file"
-                accept="video/*"
-                onChange={handleVideoFileChange}
-                className="file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:bg-muted file:text-muted-foreground"
-              />
-            </div>
-            {videoFile ? (
-              <p className="text-sm text-muted-foreground">Novo arquivo: {videoFile.name}</p>
+            <Label>Alterar Arquivo de Vídeo (opcional)</Label>
+            <Input
+              type="file"
+              accept="video/*"
+              onChange={handleVideoFileChange}
+            />
+            {newVideoFile ? (
+              <p className="text-sm text-green-600">Novo arquivo selecionado: {newVideoFile.name}</p>
             ) : (
-              <p className="text-sm text-muted-foreground">Arquivo atual mantido</p>
+              <p className="text-sm text-muted-foreground">Vídeo atual será mantido</p>
             )}
           </div>
-
+          
           <div className="space-y-2">
-            <Label htmlFor="edit-thumbnail-file">Alterar Imagem de Capa (opcional)</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="edit-thumbnail-file"
-                type="file"
-                accept="image/*"
-                onChange={handleThumbnailChange}
-                className="file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:bg-muted file:text-muted-foreground"
-              />
-            </div>
+            <Label>Alterar Imagem de Capa (opcional)</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleThumbnailChange}
+            />
             {thumbnailPreview && (
-              <div className="relative w-32 h-20 bg-muted rounded-lg overflow-hidden">
+              <div className="mt-2 relative w-32 h-20 bg-muted rounded-lg overflow-hidden">
                 <img
-                  src={thumbnailPreview || "/placeholder.svg"}
-                  alt="Preview da capa"
+                  src={thumbnailPreview}
+                  alt="Preview"
                   className="w-full h-full object-cover"
                 />
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="destructive"
-                  className="absolute top-1 right-1 h-6 w-6 p-0"
-                  onClick={removeThumbnail}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
+                {newThumbFile && (
+                   <Button type="button" size="sm" variant="destructive" className="absolute top-1 right-1 h-6 w-6 p-0" onClick={removeThumbnail}>
+                     <X className="h-3 w-3" />
+                   </Button>
+                )}
               </div>
             )}
-          </div>
-
-          <div className="flex justify-end space-x-2">
+            {!newThumbFile && thumbnailPreview && (
+              <p className="text-sm text-muted-foreground mt-1">Capa atual será mantida</p>
+            )}
+          </div>                     
+          <div className="flex justify-end space-x-2">            
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim()}>
+            <Button type="submit" disabled={!title.trim()|| uploadProgress !== null}>
               <Save className="mr-2 h-4 w-4" />
               Salvar Alterações
             </Button>
           </div>
+          {uploadProgress !== null && (
+              <div className="space-y-2">
+                <Label>Enviando arquivos... {uploadProgress}%</Label>
+                <div className="w-full bg-muted rounded-full h-2.5">
+                  <div className="bg-primary h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
+                </div>
+              </div>
+            )}
         </form>
       </DialogContent>
     </Dialog>

@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/Dashboard/ui/card"
 import { Button } from "@/components/Dashboard/ui/button"
 import { Badge } from "@/components/Dashboard/ui/badge"
 import { Trash2, GripVertical } from "lucide-react"
-import type { ArtImage } from "@/app/dashboard/projetos-arte/page"
+import type { ArtImage } from "@/app/admin/dashboard/projetos-arte/page"
 
 interface ProjectImageGalleryProps {
   images: ArtImage[]
@@ -85,7 +85,7 @@ export function ProjectImageGallery({ images, onDelete, onReorder }: ProjectImag
                     {image.order + 1}
                   </Badge>
                 </div>
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 md:opacity-0 md:group-hover:opacity-100 md:transition-opacity">
                   <Button
                     size="sm"
                     variant="destructive"

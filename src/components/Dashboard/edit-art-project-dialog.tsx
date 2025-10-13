@@ -8,7 +8,7 @@ import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Label } from "@/components/Dashboard/ui/label"
 import { Save } from "lucide-react"
-import type { ArtProject } from "@/app/dashboard/projetos-arte/page"
+import type { ArtProject } from "@/app/admin/dashboard/projetos-arte/page"
 
 interface EditArtProjectDialogProps {
   project: ArtProject
