@@ -119,6 +119,20 @@
   }
 }
 
+#sobre-mim strong, [data-slot="card-content"] .prose strong {
+  color: var(--secondary);
+}
+
+#portfolio .over:hover h3 {
+  color: #ffffff;
+}
+#portfolio .over:hover span {
+  color: #d6ae33;
+}
+#portfolio .over:hover svg {
+  color: #ffffff;
+}
+
 .slick-dots li {
   margin: 0;
 }

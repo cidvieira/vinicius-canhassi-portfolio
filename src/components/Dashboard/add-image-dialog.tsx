@@ -40,7 +40,7 @@ export function AddImageDialog({ open, onOpenChange, onAdd }: AddImageDialogProp
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    processImageFile(file)
+    processImageFile(file || null)
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -128,7 +128,7 @@ export function AddImageDialog({ open, onOpenChange, onAdd }: AddImageDialogProp
                 <div className="space-y-2">
                   <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
                   <div className="flex flex-col items-center gap-1">
-                    <Label htmlFor="image-upload" className="cursor-pointer text-primary hover:underline">
+                    <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
                       Clique para fazer upload ou arraste a imagem aqui
                     </Label>
                     <p className="text-xs text-muted-foreground">PNG, JPG, WEBP *WebP melhora a velocidade e eficiência.</p>

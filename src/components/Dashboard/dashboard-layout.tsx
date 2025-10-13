@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import { signOut } from "next-auth/react";
 import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/Dashboard/ui/button"
@@ -9,7 +9,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/Dashboard/ui/she
 import { cn } from "@/lib/utils"
 import { Menu, User, ImageIcon, Video, LogOut, Home, ArrowLeft } from "lucide-react"
 import Image from "next/image"
-import logo from "../../../public/vinicius-canhassi.svg"
+import logo from "../../../public/images/vinicius-canhassi.svg"
+import Link from "next/link";
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -18,22 +19,22 @@ interface DashboardLayoutProps {
 const navigation = [
   {
     name: "Dashboard",
-    href: "/dashboard",
+    href: "/admin/dashboard",
     icon: Home,
   },
   {
     name: "Sobre Mim",
-    href: "/dashboard/sobre-mim",
+    href: "/admin/dashboard/sobre-mim",
     icon: User,
   },
   {
     name: "Projetos (Arte)",
-    href: "/dashboard/projetos-arte",
+    href: "/admin/dashboard/projetos-arte",
     icon: ImageIcon,
   },
   {
     name: "Projetos (Vídeo)",
-    href: "/dashboard/projetos-video",
+    href: "/admin/dashboard/projetos-video",
     icon: Video,
   },
 ]
@@ -44,11 +45,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
 
   const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated")
-    router.push("/")
+    signOut({
+      callbackUrl: "/admin/login", 
+    });
   }
 
-  const isSubPage = pathname !== "/dashboard"
+  const isSubPage = pathname !== "/admin/dashboard"
 
   const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
     <div className="flex h-full flex-col">
@@ -60,23 +62,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {navigation.map((item) => {
           const isActive = pathname === item.href
           return (
-            <Button
-              key={item.name}
-              variant={isActive ? "default" : "ghost"}
-              className={cn(
-                "w-full justify-start",
-                isActive
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              )}
-              onClick={() => {
-                router.push(item.href)
-                if (mobile) setSidebarOpen(false)
-              }}
-            >
-              <item.icon className="mr-3 h-4 w-4" />
-              {item.name}
-            </Button>
+            <Link key={item.name} href={item.href} passHref>
+              <Button
+                key={item.name}
+                variant={isActive ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start my-1",
+                  isActive
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                )}
+                onClick={() => {
+                  if (mobile) setSidebarOpen(false)
+                }}
+              >
+                <item.icon className="mr-3 h-4 w-4" />
+                {item.name}
+              </Button>
+            </Link>
           )
         })}
       </nav>
@@ -119,15 +122,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-          <div className="pt-16 lg:pt-0">
-            {isSubPage && (
-              <div className="lg:hidden mb-4 flex justify-end fixed top-4 right-4 z-50">
-                <Button variant="outline" size="sm" onClick={() => router.push("/dashboard")}>
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Voltar ao Dashboard
-                </Button>
-              </div>
-            )}
+          <div className="pt-16 lg:pt-0">            
             {children}
           </div>
         </main>
