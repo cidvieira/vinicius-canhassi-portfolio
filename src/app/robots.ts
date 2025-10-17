@@ -1,12 +1,13 @@
 import type { MetadataRoute } from 'next'
  
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = 'https://www.viniciuscanhassi.com.br';
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: '/private/',
+      disallow: '/admin/',
     },
-    sitemap: 'https://www.viniciuscanhassi.com.br/sitemap.xml',
+    sitemap: `${baseUrl}/sitemap.xml`, 
   }
 }
