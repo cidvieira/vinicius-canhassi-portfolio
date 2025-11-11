@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import toast from 'react-hot-toast';
-import { upload } from '@vercel/blob/client';
+import { handleFileUpload } from '@/lib/upload';
 import { ArtProjectGallery } from "@/components/Dashboard/art-project-gallery"
 import { AddArtProjectDialog } from "@/components/Dashboard/add-art-project-dialog"
 import { Button } from "@/components/Dashboard/ui/button"
@@ -75,18 +75,6 @@ export default function ProjetosArtePage() {
     };
     initialLoad();
   }, [fetchProjects]);
-
-  const handleFileUpload = async (file: File): Promise<string> => {
-    const blob = await upload(
-      file.name,
-      file,
-      {
-        access: 'public',
-        handleUploadUrl: '/api/admin/upload', 
-      }
-    );
-    return blob.url;
-  };
 
   const handleAddProject = async (newProject: { title: string; subtitle: string; images: File[] }) => {
     const promise = new Promise<void>(async (resolve, reject) => {

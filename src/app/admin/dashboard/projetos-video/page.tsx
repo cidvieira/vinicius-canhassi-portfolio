@@ -8,20 +8,12 @@ import { EditVideoProjectDialog } from "@/components/Dashboard/edit-video-projec
 import { Button } from "@/components/Dashboard/ui/button"
 import { Plus, LayoutGrid, List } from "lucide-react" 
 import { SkeletonCard } from "@/components/Dashboard/ui/skeleton-card";
-import { upload } from '@vercel/blob/client';
+import { handleFileUpload } from '@/lib/upload';
 import { SkeletonCardHeader } from "@/components/Dashboard/ui/skeleton-card-header"
 import { SkeletonListItem } from "@/components/Dashboard/ui/skeleton-list-item";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/Dashboard/ui/alert-dialog";
+import { VideoProject } from "@/types/portfolio";
 
-export interface VideoProject {
-  id: string
-  title: string
-  videoUrl: string 
-  thumbnailUrl: string | null
-  order: number
-  createdAt: string
-  updatedAt: string
-}
 
 export default function ProjetosVideoPage() {
   const [projects, setProjects] = useState<VideoProject[]>([]);
@@ -74,21 +66,6 @@ export default function ProjetosVideoPage() {
     };
     initialLoad();
   }, [fetchProjects]);
-
-  const handleFileUpload = async (file: File, onProgress: (progress: number) => void): Promise<string> => {
-    const blob = await upload(
-      file.name,
-      file,
-      {
-        access: 'public',
-        handleUploadUrl: '/api/admin/upload',
-        onUploadProgress: (e) => {
-          onProgress(e.percentage);
-        },
-      }
-    );
-    return blob.url;
-  };
 
   const handleAddProject = async (data: { title: string; videoFile: File; thumbFile: File }) => {
     const promise = new Promise<void>(async (resolve, reject) => {
@@ -158,7 +135,7 @@ export default function ProjetosVideoPage() {
     });
   }
 
-   const handleDeleteProject = async () => {
+  const handleDeleteProject = async () => {
     if (!projectToDelete) return;
 
     const promise = fetch(`/api/admin/video-projects/${projectToDelete.id}`, {

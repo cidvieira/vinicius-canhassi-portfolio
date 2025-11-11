@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { upload } from '@vercel/blob/client';
+import { handleFileUpload } from '@/lib/upload';
 import Link from "next/link"
 import toast from 'react-hot-toast';
 import { ProjectImageGallery } from "@/components/Dashboard/project-image-gallery"
@@ -90,18 +90,6 @@ export default function ProjectDetailPage() {
       error: 'Não foi possível salvar.',
     });
   }
-
-  const handleFileUpload = async (file: File): Promise<string> => {
-    const blob = await upload(
-      file.name,
-      file,
-      {
-        access: 'public',
-        handleUploadUrl: '/api/admin/upload',
-      }
-    );
-    return blob.url;
-  };
   
   const updateProjectImages = async (updatedImages: ArtImage[]) => {
     if (!project) return;
