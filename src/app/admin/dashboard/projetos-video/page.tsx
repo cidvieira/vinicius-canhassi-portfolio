@@ -12,8 +12,16 @@ import { handleFileUpload } from '@/lib/upload';
 import { SkeletonCardHeader } from "@/components/Dashboard/ui/skeleton-card-header"
 import { SkeletonListItem } from "@/components/Dashboard/ui/skeleton-list-item";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/Dashboard/ui/alert-dialog";
-import { VideoProject } from "@/types/portfolio";
 
+export interface VideoProject {
+  id: string
+  title: string
+  videoUrl: string 
+  thumbnailUrl: string | null
+  order: number
+  createdAt: string
+  updatedAt: string
+}
 
 export default function ProjetosVideoPage() {
   const [projects, setProjects] = useState<VideoProject[]>([]);
