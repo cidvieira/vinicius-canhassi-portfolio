@@ -75,17 +75,16 @@ export default function ProjetosVideoPage() {
     initialLoad();
   }, [fetchProjects]);
 
-  const handleAddProject = async (data: { title: string; videoFile: File; thumbFile: File }) => {
+  const handleAddProject = async (data: { title: string; videoUrl: string; thumbFile: File }) => {
     const promise = new Promise<void>(async (resolve, reject) => {
       setUploadProgress(0);
       try {
-        const thumbnailUrl = await handleFileUpload(data.thumbFile, () => {});
-        const videoUrl = await handleFileUpload(data.videoFile, (progress) => { setUploadProgress(progress); });
+        const thumbnailUrl = await handleFileUpload(data.thumbFile, (progress) => { setUploadProgress(progress); });
         
         const response = await fetch('/api/admin/video-projects', { 
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: data.title, videoUrl, thumbnailUrl }) 
+          body: JSON.stringify({ title: data.title, videoUrl: data.videoUrl, thumbnailUrl }) 
         });
         if (!response.ok) throw new Error("Falha ao criar projeto.");
         await new Promise(res => setTimeout(res, 500));
@@ -107,21 +106,19 @@ export default function ProjetosVideoPage() {
     });
   }
   
-  const handleEditProject = async (updatedProject: VideoProject, newFiles?: { videoFile?: File; thumbFile?: File }) => {
+  const handleEditProject = async (updatedProject: VideoProject, newFiles?: { thumbFile?: File }) => {
     const promise = new Promise<void>(async (resolve, reject) => {
-      let videoUrl = updatedProject.videoUrl;
       let thumbnailUrl = updatedProject.thumbnailUrl;
-      const isUploading = newFiles?.videoFile || newFiles?.thumbFile;
+      const isUploading = !!newFiles?.thumbFile;
       if (isUploading) setUploadProgress(0);
 
       try {
-        if (newFiles?.thumbFile) thumbnailUrl = await handleFileUpload(newFiles.thumbFile, () => {});
-        if (newFiles?.videoFile) videoUrl = await handleFileUpload(newFiles.videoFile, (progress) => { setUploadProgress(progress); });
+        if (newFiles?.thumbFile) thumbnailUrl = await handleFileUpload(newFiles.thumbFile, (progress) => { setUploadProgress(progress); });
         
         const response = await fetch(`/api/admin/video-projects/${updatedProject.id}`, { 
           method: 'PUT', 
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: updatedProject.title, videoUrl, thumbnailUrl }) 
+          body: JSON.stringify({ title: updatedProject.title, videoUrl: updatedProject.videoUrl, thumbnailUrl }) 
         });
         if (!response.ok) throw new Error("Falha ao editar projeto.");
         

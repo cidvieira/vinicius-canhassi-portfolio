@@ -11,35 +11,27 @@ import { Plus, X, Upload, Video } from "lucide-react"
 interface AddVideoProjectDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onAdd: (data: { title: string; videoFile: File; thumbFile: File }) => void
+  onAdd: (data: { title: string; videoUrl: string; thumbFile: File }) => void
   uploadProgress: number | null
 }
 
 export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgress }: AddVideoProjectDialogProps) {
   const [title, setTitle] = useState("")
-  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const [videoUrl, setVideoUrl] = useState("")
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("")
-  const [isDragOverVideo, setIsDragOverVideo] = useState(false)
   const [isDragOverThumbnail, setIsDragOverThumbnail] = useState(false)
 
   useEffect(() => {
     if (!open) {
       setTitle("")
-      setVideoFile(null)
+      setVideoUrl("")
       setThumbnailFile(null)
       setThumbnailPreview("")
-      setIsDragOverVideo(false)
       setIsDragOverThumbnail(false)
     }
   }, [open])
 
-  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file && file.type.startsWith("video/")) {
-      setVideoFile(file)
-    }
-  }
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -54,13 +46,6 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
     setThumbnailPreview("")
   }
 
-  const handleVideoDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverVideo(true) }
-  const handleVideoDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverVideo(false) }
-  const handleVideoDrop = (e: React.DragEvent) => {
-    e.preventDefault(); setIsDragOverVideo(false)
-    const file = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith("video/"))
-    if (file) setVideoFile(file)
-  }
 
   const handleThumbnailDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverThumbnail(true) }
   const handleThumbnailDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverThumbnail(false) }
@@ -73,13 +58,13 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!title.trim() || !videoFile || !thumbnailFile) {
+    if (!title.trim() || !videoUrl.trim() || !thumbnailFile) {
       return;
     }
 
     onAdd({
       title: title.trim(),
-      videoFile,
+      videoUrl: videoUrl.trim(),
       thumbFile: thumbnailFile,
     })
   }
@@ -105,34 +90,14 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
           </div>
 
           <div className="space-y-2">
-            <Label>Arquivo de Vídeo</Label>
-            <div
-              className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                isDragOverVideo ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
-              }`}
-              onDragOver={handleVideoDragOver}
-              onDragLeave={handleVideoDragLeave}
-              onDrop={handleVideoDrop}
-            >
-              {videoFile ? (
-                <div className="space-y-2">
-                  <Video className="h-8 w-8 mx-auto text-primary" />
-                  <p className="text-sm font-medium">{videoFile.name}</p>
-                  <Button type="button" variant="outline" size="sm" onClick={() => document.getElementById("video-file")?.click()}>
-                    Trocar Vídeo
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-2 flex flex-col items-center" onClick={() => document.getElementById("video-file")?.click()}>
-                  <Video className="h-8 w-8 mx-auto text-muted-foreground cursor-pointer" />
-                  <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
-                    Clique para fazer upload ou arraste o vídeo aqui
-                  </Label>
-                  <p className="text-xs text-muted-foreground">MP4, MOV, AVI até 100MB</p>
-                </div>
-              )}
-              <Input id="video-file" type="file" accept="video/*" onChange={handleVideoFileChange} className="hidden" />
-            </div>
+            <Label htmlFor="video-url">Link do Vídeo (YouTube ou Vimeo)</Label>
+            <Input
+              id="video-url"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="Cole o link do vídeo aqui"
+              required
+            />
           </div>
 
           <div className="space-y-2">
@@ -173,14 +138,14 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim() || !videoFile || !thumbnailFile || uploadProgress !== null}>
+            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || !thumbnailFile || uploadProgress !== null}>
               <Plus className="mr-2 h-4 w-4" />
               Adicionar Vídeo
             </Button>
           </div>
           {uploadProgress !== null && (
             <div className="space-y-2">
-              <Label>Enviando vídeo... {uploadProgress}%</Label>
+              <Label>Enviando capa... {uploadProgress}%</Label>
               <div className="w-full bg-muted rounded-full h-2.5">
                 <div className="bg-primary h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
               </div>

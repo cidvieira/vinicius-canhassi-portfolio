@@ -49,8 +49,9 @@ export async function DELETE(
       }
 
       const urlsToDelete = [];
-      if (projectToDelete.videoUrl) urlsToDelete.push(projectToDelete.videoUrl);
-      if (projectToDelete.thumbnailUrl) urlsToDelete.push(projectToDelete.thumbnailUrl);
+      if (projectToDelete.thumbnailUrl) {
+        urlsToDelete.push(projectToDelete.thumbnailUrl);
+      }
       
       if (urlsToDelete.length > 0) {
         await del(urlsToDelete);

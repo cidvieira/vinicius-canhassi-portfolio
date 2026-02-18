@@ -13,31 +13,25 @@ interface EditVideoProjectDialogProps {
   project: VideoProject
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSave: (project: VideoProject, newFiles?: { videoFile?: File; thumbFile?: File }) => void
+  onSave: (project: VideoProject, newFiles?: { thumbFile?: File }) => void
   uploadProgress: number | null;
 }
 
 export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, uploadProgress }: EditVideoProjectDialogProps) {
   const [title, setTitle] = useState("")
-  const [newVideoFile, setNewVideoFile] = useState<File | null>(null)
+  const [videoUrl, setVideoUrl] = useState("")
   const [newThumbFile, setNewThumbFile] = useState<File | null>(null)
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("")
 
   useEffect(() => {
     if (project && open) {
       setTitle(project.title)
+      setVideoUrl(project.videoUrl)
       setThumbnailPreview(project.thumbnailUrl || "")      
-      setNewVideoFile(null)
       setNewThumbFile(null)
     }
   }, [project, open])
 
-  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file && file.type.startsWith("video/")) {
-      setNewVideoFile(file)
-    }
-  }
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -54,15 +48,15 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim()) return
+    if (!title.trim() || !videoUrl.trim()) return
 
     const updatedProject: VideoProject = {
       ...project,
       title: title.trim(),
+      videoUrl: videoUrl.trim(),
     }
 
     const newFiles = {
-      videoFile: newVideoFile || undefined,
       thumbFile: newThumbFile || undefined,
     }
 
@@ -90,17 +84,14 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
           </div>
 
           <div className="space-y-2">
-            <Label>Alterar Arquivo de Vídeo (opcional)</Label>
+            <Label htmlFor="edit-video-url">Link do Vídeo (YouTube ou Vimeo)</Label>
             <Input
-              type="file"
-              accept="video/*"
-              onChange={handleVideoFileChange}
+              id="edit-video-url"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="Cole o link do vídeo aqui"
+              required
             />
-            {newVideoFile ? (
-              <p className="text-sm text-green-600">Novo arquivo selecionado: {newVideoFile.name}</p>
-            ) : (
-              <p className="text-sm text-muted-foreground">Vídeo atual será mantido</p>
-            )}
           </div>
           
           <div className="space-y-2">
@@ -132,7 +123,7 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim()|| uploadProgress !== null}>
+            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || uploadProgress !== null}>
               <Save className="mr-2 h-4 w-4" />
               Salvar Alterações
             </Button>
