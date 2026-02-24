@@ -6,7 +6,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Label } from "@/components/Dashboard/ui/label"
-import { Upload, X } from "lucide-react"
+import { Upload, X, Loader2 } from "lucide-react"
+import { optimizeImage, validateImage } from "@/lib/image-utils"
+import toast from "react-hot-toast"
 
 interface AddArtProjectDialogProps {
   open: boolean
@@ -20,24 +22,47 @@ export function AddArtProjectDialog({ open, onOpenChange, onAdd }: AddArtProject
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     processFiles(files)
   }
 
-  const processFiles = (files: File[]) => {
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"))
-    if (imageFiles.length > 0) {
-      setImageFiles((prev) => [...prev, ...imageFiles])
+  const processFiles = async (files: File[]) => {
+    const validImages: File[] = []
+    
+    for (const file of files) {
+      const error = validateImage(file)
+      if (error) {
+        toast.error(`${file.name}: ${error}`)
+        continue
+      }
+      validImages.push(file)
+    }
 
-      imageFiles.forEach((file) => {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          setImagePreviews((prev) => [...prev, e.target?.result as string])
-        }
-        reader.readAsDataURL(file)
-      })
+    if (validImages.length > 0) {
+      setIsOptimizing(true)
+      try {
+        const optimizedFiles = await Promise.all(
+          validImages.map((file) => optimizeImage(file))
+        )
+
+        setImageFiles((prev) => [...prev, ...optimizedFiles])
+
+        optimizedFiles.forEach((file) => {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            setImagePreviews((prev) => [...prev, e.target?.result as string])
+          }
+          reader.readAsDataURL(file)
+        })
+      } catch (error) {
+        console.error("Erro ao otimizar imagens:", error)
+        toast.error("Ocorreu um erro ao processar algumas imagens.")
+      } finally {
+        setIsOptimizing(false)
+      }
     }
   }
 
@@ -157,10 +182,19 @@ export function AddArtProjectDialog({ open, onOpenChange, onAdd }: AddArtProject
                 <div className="space-y-2">
                   <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
                   <div className="flex flex-col items-center gap-1">
-                    <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
-                      Clique para fazer upload ou arraste as imagens aqui
-                    </Label>
-                    <p className="text-xs text-muted-foreground">PNG, JPG, WEBP *WebP melhora a velocidade e eficiência.</p>
+                    {isOptimizing ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        <p className="text-sm font-medium">Otimizando imagens...</p>
+                      </div>
+                    ) : (
+                      <>
+                        <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
+                          Clique para fazer upload ou arraste as imagens aqui
+                        </Label>
+                        <p className="text-xs text-muted-foreground">PNG, JPG, WEBP (Otimizados automaticamente)</p>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
@@ -179,7 +213,7 @@ export function AddArtProjectDialog({ open, onOpenChange, onAdd }: AddArtProject
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim() || !subtitle.trim() || imageFiles.length === 0}>
+            <Button type="submit" disabled={!title.trim() || !subtitle.trim() || imageFiles.length === 0 || isOptimizing}>
               <Upload className="mr-2 h-4 w-4" />
               Criar Projeto
             </Button>

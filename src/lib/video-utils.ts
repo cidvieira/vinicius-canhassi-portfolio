@@ -1,18 +1,20 @@
 /**
- * Extracts the video ID and returns the embed URL for YouTube and Vimeo.
- * 
+ * Extracts the video ID and returns the embed URL for YouTube, Vimeo and Google Drive.
+ *
  * Supported formats:
  * - YouTube: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/shorts/ID
  * - Vimeo: vimeo.com/ID
- * 
+ * - Google Drive: drive.google.com/file/d/ID/view
+ *
  * @param url The original video URL
  * @returns The embed URL or the original URL if no ID is found
  */
 export function getEmbedUrl(url: string): string {
-  if (!url) return '';
+  if (!url) return "";
 
   // YouTube
-  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const youtubeRegex =
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const youtubeMatch = url.match(youtubeRegex);
   const youtubeId = youtubeMatch ? youtubeMatch[1] : null;
 
@@ -42,5 +44,5 @@ export function isDirectVideoFile(url: string): string | null {
  * Checks if a URL is likely a vertical YouTube Shorts or mobile video.
  */
 export function isVerticalVideo(url: string): boolean {
-  return url.includes('/shorts/') || url.includes('shorts/');
+  return url.includes("/shorts/") || url.includes("shorts/");
 }

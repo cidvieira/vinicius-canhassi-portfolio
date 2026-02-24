@@ -6,7 +6,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Label } from "@/components/Dashboard/ui/label"
-import { Plus, X, Upload, Video } from "lucide-react"
+import { Plus, X, Upload, Video, Loader2 } from "lucide-react"
+import { optimizeImage, validateImage } from "@/lib/image-utils"
+import toast from "react-hot-toast"
 
 interface AddVideoProjectDialogProps {
   open: boolean
@@ -21,6 +23,7 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("")
   const [isDragOverThumbnail, setIsDragOverThumbnail] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
 
   useEffect(() => {
     if (!open) {
@@ -33,11 +36,26 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
   }, [open])
 
 
-  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file && file.type.startsWith("image/")) {
-      setThumbnailFile(file)
-      setThumbnailPreview(URL.createObjectURL(file))
+    if (file) {
+      const error = validateImage(file)
+      if (error) {
+        toast.error(error)
+        return
+      }
+
+      setIsOptimizing(true)
+      try {
+        const optimizedFile = await optimizeImage(file)
+        setThumbnailFile(optimizedFile)
+        setThumbnailPreview(URL.createObjectURL(optimizedFile))
+      } catch (error) {
+        console.error("Erro ao otimizar imagem:", error)
+        toast.error("Erro ao processar imagem de capa.")
+      } finally {
+        setIsOptimizing(false)
+      }
     }
   }
 
@@ -49,10 +67,28 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
 
   const handleThumbnailDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverThumbnail(true) }
   const handleThumbnailDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverThumbnail(false) }
-  const handleThumbnailDrop = (e: React.DragEvent) => {
+  const handleThumbnailDrop = async (e: React.DragEvent) => {
     e.preventDefault(); setIsDragOverThumbnail(false)
     const file = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith("image/"))
-    if (file) { setThumbnailFile(file); setThumbnailPreview(URL.createObjectURL(file)); }
+    if (file) {
+      const error = validateImage(file)
+      if (error) {
+        toast.error(error)
+        return
+      }
+
+      setIsOptimizing(true)
+      try {
+        const optimizedFile = await optimizeImage(file)
+        setThumbnailFile(optimizedFile)
+        setThumbnailPreview(URL.createObjectURL(optimizedFile))
+      } catch (error) {
+        console.error("Erro ao otimizar imagem:", error)
+        toast.error("Erro ao processar imagem de capa.")
+      } finally {
+        setIsOptimizing(false)
+      }
+    }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -123,12 +159,21 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2 flex flex-col items-center" onClick={() => document.getElementById("thumbnail-file")?.click()}>
-                  <Upload className="h-6 w-6 mx-auto text-muted-foreground cursor-pointer" />
-                  <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
-                    Clique para fazer upload ou arraste as imagens aqui
-                  </Label>
-                  <p className="text-xs text-muted-foreground">PNG, JPG, WEBP *WebP melhora a velocidade e eficiência.</p>
+                <div className="space-y-2 flex flex-col items-center" onClick={() => !isOptimizing && document.getElementById("thumbnail-file")?.click()}>
+                  {isOptimizing ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                      <p className="text-xs font-medium">Otimizando...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className="h-6 w-6 mx-auto text-muted-foreground cursor-pointer" />
+                      <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
+                        Clique para fazer upload ou arraste a capa aqui
+                      </Label>
+                      <p className="text-xs text-muted-foreground">PNG, JPG, WEBP (Otimizado automaticamente)</p>
+                    </>
+                  )}
                 </div>
               )}
               <Input id="thumbnail-file" type="file" accept="image/*" onChange={handleThumbnailChange} className="hidden" />
@@ -138,7 +183,7 @@ export function AddVideoProjectDialog({ open, onOpenChange, onAdd, uploadProgres
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || !thumbnailFile || uploadProgress !== null}>
+            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || !thumbnailFile || uploadProgress !== null || isOptimizing}>
               <Plus className="mr-2 h-4 w-4" />
               Adicionar Vídeo
             </Button>

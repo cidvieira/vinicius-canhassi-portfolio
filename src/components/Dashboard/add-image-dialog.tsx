@@ -6,7 +6,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Label } from "@/components/Dashboard/ui/label"
-import { Upload, X } from "lucide-react"
+import { Upload, X, Loader2 } from "lucide-react"
+import { optimizeImage, validateImage } from "@/lib/image-utils"
+import toast from "react-hot-toast"
 
 interface AddImageDialogProps {
   open: boolean
@@ -18,6 +20,7 @@ export function AddImageDialog({ open, onOpenChange, onAdd }: AddImageDialogProp
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState("")
   const [isDragOver, setIsDragOver] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
 
   useEffect(() => {
     if (!open) {
@@ -27,14 +30,29 @@ export function AddImageDialog({ open, onOpenChange, onAdd }: AddImageDialogProp
     }
   }, [open])
 
-  const processImageFile = (file: File | null) => {
-    if (file && file.type.startsWith("image/")) {
-      setImageFile(file)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string)
+  const processImageFile = async (file: File | null) => {
+    if (file) {
+      const error = validateImage(file)
+      if (error) {
+        toast.error(error)
+        return
       }
-      reader.readAsDataURL(file)
+
+      setIsOptimizing(true)
+      try {
+        const optimizedFile = await optimizeImage(file)
+        setImageFile(optimizedFile)
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setImagePreview(e.target?.result as string)
+        }
+        reader.readAsDataURL(optimizedFile)
+      } catch (error) {
+        console.error("Erro ao otimizar imagem:", error)
+        toast.error("Erro ao processar imagem.")
+      } finally {
+        setIsOptimizing(false)
+      }
     }
   }
 
@@ -126,13 +144,22 @@ export function AddImageDialog({ open, onOpenChange, onAdd }: AddImageDialogProp
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                  <div className="flex flex-col items-center gap-1">
-                    <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
-                      Clique para fazer upload ou arraste a imagem aqui
-                    </Label>
-                    <p className="text-xs text-muted-foreground">PNG, JPG, WEBP *WebP melhora a velocidade e eficiência.</p>
-                  </div>
+                  {isOptimizing ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      <p className="text-sm font-medium">Otimizando imagem...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                      <div className="flex flex-col items-center gap-1">
+                        <Label htmlFor="image-upload" className="cursor-pointer hover:underline">
+                          Clique para fazer upload ou arraste a imagem aqui
+                        </Label>
+                        <p className="text-xs text-muted-foreground">PNG, JPG, WEBP (Otimizado automaticamente)</p>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
               <Input id="image-upload" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
@@ -143,7 +170,7 @@ export function AddImageDialog({ open, onOpenChange, onAdd }: AddImageDialogProp
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!imageFile}>
+            <Button type="submit" disabled={!imageFile || isOptimizing}>
               <Upload className="mr-2 h-4 w-4" />
               Adicionar Imagem
             </Button>

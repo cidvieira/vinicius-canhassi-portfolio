@@ -6,7 +6,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Label } from "@/components/Dashboard/ui/label"
-import { Save, X } from "lucide-react"
+import { Save, X, Loader2 } from "lucide-react"
+import { optimizeImage, validateImage } from "@/lib/image-utils"
+import toast from "react-hot-toast"
 import type { VideoProject } from "@/app/admin/dashboard/projetos-video/page"
 
 interface EditVideoProjectDialogProps {
@@ -22,6 +24,7 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
   const [videoUrl, setVideoUrl] = useState("")
   const [newThumbFile, setNewThumbFile] = useState<File | null>(null)
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("")
+  const [isOptimizing, setIsOptimizing] = useState(false)
 
   useEffect(() => {
     if (project && open) {
@@ -33,11 +36,26 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
   }, [project, open])
 
 
-  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file && file.type.startsWith("image/")) {
-      setNewThumbFile(file)
-      setThumbnailPreview(URL.createObjectURL(file))
+    if (file) {
+      const error = validateImage(file)
+      if (error) {
+        toast.error(error)
+        return
+      }
+
+      setIsOptimizing(true)
+      try {
+        const optimizedFile = await optimizeImage(file)
+        setNewThumbFile(optimizedFile)
+        setThumbnailPreview(URL.createObjectURL(optimizedFile))
+      } catch (error) {
+        console.error("Erro ao otimizar imagem:", error)
+        toast.error("Erro ao processar imagem de capa.")
+      } finally {
+        setIsOptimizing(false)
+      }
     }
   }
 
@@ -100,7 +118,14 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
               type="file"
               accept="image/*"
               onChange={handleThumbnailChange}
+              disabled={isOptimizing}
             />
+            {isOptimizing && (
+              <div className="flex items-center gap-2 mt-2">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <span className="text-sm font-medium">Otimizando imagem...</span>
+              </div>
+            )}
             {thumbnailPreview && (
               <div className="mt-2 relative w-32 h-20 bg-muted rounded-lg overflow-hidden">
                 <img
@@ -123,7 +148,7 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || uploadProgress !== null}>
+            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || uploadProgress !== null || isOptimizing}>
               <Save className="mr-2 h-4 w-4" />
               Salvar Alterações
             </Button>
