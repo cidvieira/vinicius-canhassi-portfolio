@@ -236,7 +236,6 @@ export default function ProjetosVideoPage() {
           open={!!editingProject}
           onOpenChange={(open) => !open && setEditingProject(null)}
           onSave={handleEditProject}
-          uploadProgress={uploadProgress}
         />
       )}
       <AlertDialog open={!!projectToDelete} onOpenChange={() => setProjectToDelete(null)}>
