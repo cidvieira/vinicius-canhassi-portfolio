@@ -14,6 +14,25 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   try {
     const { id } = params;
     const { title, videoUrl, thumbnailUrl } = await request.json();
+
+    const existingProject = await prisma.videoProject.findUnique({
+      where: { id },
+    });
+
+    if (!existingProject) {
+      return NextResponse.json({ error: 'Projeto não encontrado' }, { status: 404 });
+    }
+
+    // Delete old thumbnail if it's being replaced or removed
+    if (existingProject.thumbnailUrl && existingProject.thumbnailUrl !== thumbnailUrl) {
+      try {
+        await del(existingProject.thumbnailUrl);
+      } catch (error) {
+        console.error("Erro ao deletar blob antigo:", error);
+        // Continue update even if delete fails
+      }
+    }
+
     const updatedProject = await prisma.videoProject.update({
       where: { id },
       data: { title, videoUrl, thumbnailUrl },

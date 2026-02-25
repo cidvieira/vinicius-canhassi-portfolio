@@ -10,7 +10,7 @@ import { AddImageDialog } from "@/components/Dashboard/add-image-dialog"
 import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/Dashboard/ui/card"
-import { Plus, Save, ArrowLeft } from "lucide-react"
+import { Plus, Save, ArrowLeft, LayoutGrid, List, Trash2 } from "lucide-react"
 import type { ArtProject, ArtImage } from "../page"
 import { SkeletonCardHeader } from "@/components/Dashboard/ui/skeleton-card-header";
 import { SkeletonDetailPage } from "@/components/Dashboard/ui/skeleton-detail-page";
@@ -27,6 +27,19 @@ export default function ProjectDetailPage() {
   const [isAddImageDialogOpen, setIsAddImageDialogOpen] = useState(false)
   const [imageToDelete, setImageToDelete] = useState<ArtImage | null>(null);
   const [isProjectDeleteOpen, setIsProjectDeleteOpen] = useState(false);
+  const [selectedImageIds, setSelectedImageIds] = useState<string[]>([]);
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    if (typeof window !== 'undefined') {
+      const savedView = localStorage.getItem('projectImageViewMode');
+      return (savedView === 'grid' || savedView === 'list') ? savedView : 'grid';
+    }
+    return 'grid';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('projectImageViewMode', viewMode);
+  }, [viewMode]);
   
   const fetchProjectData = useCallback(async () => {
     if (!projectId) return;
@@ -118,18 +131,21 @@ export default function ProjectDetailPage() {
     }
   }
 
-  const handleAddImage = async (newImageFile: File) => {
+  const handleAddImage = async (newImageFiles: File[]) => {
     if (!project) return;
     
     const promise = new Promise<void>(async (resolve, reject) => {
       try {
-        const newImageUrl = await handleFileUpload(newImageFile);
-        const newImage = {
-          id: `temp-${Date.now()}`,
-          url: newImageUrl,
-          order: project.images.length,
-        };
-        const updatedImages = [...project.images, newImage];
+        const uploadPromises = newImageFiles.map(file => handleFileUpload(file));
+        const uploadedUrls = await Promise.all(uploadPromises);
+        
+        const newImages = uploadedUrls.map((url, index) => ({
+          id: `temp-${Date.now()}-${index}`,
+          url: url,
+          order: project.images.length + index,
+        }));
+        
+        const updatedImages = [...project.images, ...newImages];
         setImageCount(updatedImages.length);
         await updateProjectImages(updatedImages);
         resolve();
@@ -139,9 +155,9 @@ export default function ProjectDetailPage() {
     });
 
     toast.promise(promise, {
-      loading: 'Adicionando imagem...',
-      success: 'Imagem adicionada com sucesso!',
-      error: 'Não foi possível adicionar a imagem.',
+      loading: 'Adicionando imagens...',
+      success: `${newImageFiles.length} imagem(ns) adicionada(s) com sucesso!`,
+      error: 'Não foi possível adicionar as imagens.',
     });
   };
 
@@ -174,6 +190,45 @@ export default function ProjectDetailPage() {
     setImageToDelete(null);
   }
 
+  const handleBulkDelete = async () => {
+    if (!project || selectedImageIds.length === 0) return;
+
+    const promise = new Promise<void>(async (resolve, reject) => {
+      try {
+        const imagesToDelete = project.images.filter(img => selectedImageIds.includes(img.id));
+        const remainingImages = project.images.filter(img => !selectedImageIds.includes(img.id));
+
+        // 1. Delete blobs from storage
+        const deletePromises = imagesToDelete.map(img => 
+          fetch('/api/admin/upload/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: img.url }),
+          })
+        );
+        await Promise.all(deletePromises);
+
+        // 2. Update project in database
+        await updateProjectImages(remainingImages);
+        
+        setImageCount(remainingImages.length);
+        setSelectedImageIds([]);
+        resolve();
+      } catch (error) {
+        console.error("Erro na exclusão em massa:", error);
+        reject(error);
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Excluindo imagens selecionadas...',
+      success: 'Imagens excluídas com sucesso!',
+      error: 'Ocorreu um erro ao excluir algumas imagens.',
+    });
+
+    setIsBulkDeleteOpen(false);
+  }
+
   const handleReorderImages = (reorderedImages: ArtImage[]) => {
     if (!project) return;
     const imagesWithNewOrder = reorderedImages.map((image, index) => ({
@@ -204,63 +259,111 @@ export default function ProjectDetailPage() {
   if (isLoading || !project) {
     return (
       <div className="space-y-6">            
-        <SkeletonCardHeader backToProjectsBtn="block" addNewBtn="block" />
+        <SkeletonCardHeader backToProjectsBtn="block" addNewBtn="hidden" />
         <SkeletonDetailPage imageCount={imageCount} />
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <Button variant="outline" size="sm" asChild className="fixed top-4 right-4 sm:right-6 lg:right-12 z-50">
-        <Link href="/admin/dashboard/projetos-arte">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar aos Projetos
-        </Link>
-      </Button>
-      <div className="flex flex-col gap-2 sm:flex-row items-start sm:items-center justify-between">
-        <div> 
-          <h1 className="text-3xl font-bold text-card-foreground">Editando: {project.title}</h1>
-          <p className="text-muted-foreground">Gerencie as imagens e detalhes deste projeto</p>              
+    <div className="space-y-6">      
+      <div className="flex flex-col gap-2">        
+        <h1 className="text-3xl font-bold text-card-foreground">Editando: {project.title}</h1>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium uppercase tracking-wider">
+          <p>Criado em: {new Date(project.createdAt).toLocaleDateString('pt-BR')}</p>
+          <span>•</span>
+          <p>Última atualização: {new Date(project.updatedAt).toLocaleDateString('pt-BR')}</p>
         </div>
-        <Button onClick={() => setIsAddImageDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Adicionar Nova Imagem
+        <Button variant="outline" size="sm" asChild className="fixed top-4 right-4 sm:right-6 lg:right-12 z-50">
+          <Link href="/admin/dashboard/projetos-arte">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar aos Projetos
+          </Link>
         </Button>
       </div>
 
-      <Card className="w-full md:w-[calc(100%_/_2_-_1.5rem)]">
-        <CardHeader>
-          <CardTitle>Informações do Projeto</CardTitle>
+      <Card className="w-full gap-0">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Informações do Projeto</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">Título</label>
-            <Input name="title" value={project.title} onChange={handleInputChange} placeholder="Título do projeto" />
+        <CardContent>
+          <div className="flex flex-col md:flex-row items-end gap-4">
+            <div className="flex-1 w-full">
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Título</label>
+              <Input name="title" value={project.title} onChange={handleInputChange} placeholder="Título do projeto" />
+            </div>
+            <div className="flex-1 w-full">
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Subtítulo</label>
+              <Input name="subtitle" value={project.subtitle} onChange={handleInputChange} placeholder="Subtítulo do projeto" />
+            </div>
+            <Button onClick={handleSaveProjectInfo} className="w-full md:w-auto">
+              <Save className="mr-2 h-4 w-4" />
+              Salvar Alterações
+            </Button>
           </div>
-          <div>
-            <label className="text-sm font-medium">Subtítulo</label>
-            <Input name="subtitle" value={project.subtitle} onChange={handleInputChange} placeholder="Subtítulo do projeto" />
-          </div>
-          <Button onClick={handleSaveProjectInfo}>
-            <Save className="mr-2 h-4 w-4" />
-            Salvar Alterações
-          </Button>
         </CardContent>
-        <CardFooter className="text-xs text-muted-foreground">
-          <div className="flex flex-col">
-            <span>
-              Criado em: {new Date(project.createdAt).toLocaleDateString('pt-BR')}
-            </span>
-            <span>
-              Última atualização: {new Date(project.updatedAt).toLocaleDateString('pt-BR')}
-            </span>
-          </div>
-        </CardFooter>
       </Card>
+
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-muted/30 p-4 rounded-lg border">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {project.images.length > 0 && (
+            <>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1 sm:flex-none border-border hover:border-transparent"
+                onClick={() => {
+                  if (selectedImageIds.length > 0) {
+                    setSelectedImageIds([]);
+                  } else {
+                    setSelectedImageIds(project.images.map(img => img.id));
+                  }
+                }}
+              >
+                {selectedImageIds.length > 0 ? "Desmarcar Todos" : "Selecionar Todos"}
+              </Button>
+              {selectedImageIds.length > 0 && (
+                <Button variant="destructive" size="sm" onClick={() => setIsBulkDeleteOpen(true)} className="flex-1 sm:flex-none">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Excluir ({selectedImageIds.length})
+                </Button>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <Button 
+            variant={viewMode === 'grid' ? 'default' : 'outline'} 
+            size="icon" 
+            className="h-9 w-9"
+            onClick={() => setViewMode('grid')}
+            title="Grade"
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+          <Button 
+            variant={viewMode === 'list' ? 'default' : 'outline'} 
+            size="icon" 
+            className="h-9 w-9"
+            onClick={() => setViewMode('list')}
+            title="Lista"
+          >
+            <List className="h-4 w-4" />
+          </Button>
+          
+          <Button onClick={() => setIsAddImageDialogOpen(true)} className="flex-1 sm:flex-none">
+            <Plus className="mr-2 h-4 w-4" />
+            Adicionar Imagens
+          </Button>
+        </div>
+      </div>
       
       <ProjectImageGallery 
         images={project.images}
+        viewMode={viewMode}
+        selectedIds={selectedImageIds}
+        onSelectionChange={setSelectedImageIds}
         onDelete={(imageId) => {
           const image = project.images.find(i => i.id === imageId);
           if (image) setImageToDelete(image);
@@ -296,6 +399,23 @@ export default function ProjectDetailPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteImage}>Sim, excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir {selectedImageIds.length} imagens?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. Todas as imagens selecionadas serão removidas permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Sim, excluir tudo
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

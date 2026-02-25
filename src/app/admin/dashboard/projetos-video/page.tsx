@@ -113,7 +113,12 @@ export default function ProjetosVideoPage() {
       if (isUploading) setUploadProgress(0);
 
       try {
-        if (newFiles?.thumbFile) thumbnailUrl = await handleFileUpload(newFiles.thumbFile, (progress) => { setUploadProgress(progress); });
+        if (newFiles?.thumbFile) {
+          thumbnailUrl = await handleFileUpload(newFiles.thumbFile, (progress) => { setUploadProgress(progress); });
+        } else {
+          // If no new file, we use the URL from the updatedProject state (which might be empty if removed)
+          thumbnailUrl = updatedProject.thumbnailUrl;
+        }
         
         const response = await fetch(`/api/admin/video-projects/${updatedProject.id}`, { 
           method: 'PUT', 

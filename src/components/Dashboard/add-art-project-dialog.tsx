@@ -140,8 +140,8 @@ export function AddArtProjectDialog({ open, onOpenChange, onAdd }: AddArtProject
           <div className="space-y-2">
             <Label htmlFor="image-upload">Imagens</Label>
             <div
-              className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                isDragOver ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+              className={`border-2 rounded-lg p-4 text-center transition-all ${
+                isDragOver ? "border-secondary bg-secondary/80 border-solid scale-[1.02]" : "border-border border-dashed hover:border-secondary/50"
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -184,7 +184,7 @@ export function AddArtProjectDialog({ open, onOpenChange, onAdd }: AddArtProject
                   <div className="flex flex-col items-center gap-1">
                     {isOptimizing ? (
                       <div className="flex flex-col items-center gap-2">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        <Loader2 className="h-8 w-8 animate-spin text-secondary" />
                         <p className="text-sm font-medium">Otimizando imagens...</p>
                       </div>
                     ) : (

@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/Dashboard/ui/button"
 import { Input } from "@/components/Dashboard/ui/input"
 import { Label } from "@/components/Dashboard/ui/label"
-import { Save, X, Loader2 } from "lucide-react"
+import { Save, X, Loader2, Upload, Video } from "lucide-react"
 import { optimizeImage, validateImage } from "@/lib/image-utils"
 import toast from "react-hot-toast"
 import type { VideoProject } from "@/app/admin/dashboard/projetos-video/page"
@@ -16,14 +16,14 @@ interface EditVideoProjectDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSave: (project: VideoProject, newFiles?: { thumbFile?: File }) => void
-  uploadProgress: number | null;
 }
 
-export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, uploadProgress }: EditVideoProjectDialogProps) {
+export function EditVideoProjectDialog({ project, open, onOpenChange, onSave }: EditVideoProjectDialogProps) {
   const [title, setTitle] = useState("")
   const [videoUrl, setVideoUrl] = useState("")
   const [newThumbFile, setNewThumbFile] = useState<File | null>(null)
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("")
+  const [isDragOverThumbnail, setIsDragOverThumbnail] = useState(false)
   const [isOptimizing, setIsOptimizing] = useState(false)
 
   useEffect(() => {
@@ -59,6 +59,32 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
     }
   }
 
+  const handleThumbnailDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverThumbnail(true) }
+  const handleThumbnailDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragOverThumbnail(false) }
+  const handleThumbnailDrop = async (e: React.DragEvent) => {
+    e.preventDefault(); setIsDragOverThumbnail(false)
+    const file = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith("image/"))
+    if (file) {
+      const error = validateImage(file)
+      if (error) {
+        toast.error(error)
+        return
+      }
+
+      setIsOptimizing(true)
+      try {
+        const optimizedFile = await optimizeImage(file)
+        setNewThumbFile(optimizedFile)
+        setThumbnailPreview(URL.createObjectURL(optimizedFile))
+      } catch (error) {
+        console.error("Erro ao otimizar imagem:", error)
+        toast.error("Erro ao processar imagem de capa.")
+      } finally {
+        setIsOptimizing(false)
+      }
+    }
+  }
+
   const removeThumbnail = () => {
     setNewThumbFile(null)
     setThumbnailPreview("") 
@@ -72,6 +98,7 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
       ...project,
       title: title.trim(),
       videoUrl: videoUrl.trim(),
+      thumbnailUrl: thumbnailPreview, // Important: This can be empty if removed
     }
 
     const newFiles = {
@@ -113,54 +140,58 @@ export function EditVideoProjectDialog({ project, open, onOpenChange, onSave, up
           </div>
           
           <div className="space-y-2">
-            <Label>Alterar Imagem de Capa (opcional)</Label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleThumbnailChange}
-              disabled={isOptimizing}
-            />
-            {isOptimizing && (
-              <div className="flex items-center gap-2 mt-2">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <span className="text-sm font-medium">Otimizando imagem...</span>
-              </div>
-            )}
-            {thumbnailPreview && (
-              <div className="mt-2 relative w-32 h-20 bg-muted rounded-lg overflow-hidden">
-                <img
-                  src={thumbnailPreview}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                />
-                {newThumbFile && (
-                   <Button type="button" size="sm" variant="destructive" className="absolute top-1 right-1 h-6 w-6 p-0" onClick={removeThumbnail}>
-                     <X className="h-3 w-3" />
-                   </Button>
-                )}
-              </div>
-            )}
-            {!newThumbFile && thumbnailPreview && (
-              <p className="text-sm text-muted-foreground mt-1">Capa atual será mantida</p>
-            )}
-          </div>                     
+            <Label>Imagem de Capa</Label>
+            <div
+              className={`border-2 rounded-lg p-4 text-center transition-all ${
+                isDragOverThumbnail ? "border-secondary bg-secondary/80 border-solid scale-[1.02]" : "border-border border-dashed hover:border-secondary/50"
+              }`}
+              onDragOver={handleThumbnailDragOver}
+              onDragLeave={handleThumbnailDragLeave}
+              onDrop={handleThumbnailDrop}
+            >
+              {thumbnailPreview ? (
+                <div className="space-y-2">
+                  <div className="relative w-32 h-20 bg-muted rounded-lg overflow-hidden mx-auto">
+                    <img src={thumbnailPreview} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                  <Button type="button" variant="outline" size="sm" onClick={() => document.getElementById("edit-thumbnail-file")?.click()}>
+                    Trocar Imagem
+                  </Button>
+                  {!newThumbFile && project.thumbnailUrl && (
+                    <p className="text-xs text-muted-foreground">Capa atual será mantida</p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2 flex flex-col items-center" onClick={() => !isOptimizing && document.getElementById("edit-thumbnail-file")?.click()}>
+                  {isOptimizing ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <Loader2 className="h-6 w-6 animate-spin text-secondary" />
+                      <p className="text-xs font-medium">Otimizando...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className="h-6 w-6 mx-auto text-muted-foreground cursor-pointer" />
+                      <Label htmlFor="edit-thumbnail-file" className="cursor-pointer hover:underline text-xs">
+                        Clique para fazer upload ou arraste a capa aqui
+                      </Label>
+                      <p className="text-xs text-muted-foreground">PNG, JPG, WEBP (Otimizado automaticamente)</p>
+                    </>
+                  )}
+                </div>
+              )}
+              <Input id="edit-thumbnail-file" type="file" accept="image/*" onChange={handleThumbnailChange} className="hidden" />
+            </div>
+          </div>
+                     
           <div className="flex justify-end space-x-2">            
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || uploadProgress !== null || isOptimizing}>
+            <Button type="submit" disabled={!title.trim() || !videoUrl.trim() || !thumbnailPreview || isOptimizing}>
               <Save className="mr-2 h-4 w-4" />
               Salvar Alterações
             </Button>
           </div>
-          {uploadProgress !== null && (
-              <div className="space-y-2">
-                <Label>Enviando arquivos... {uploadProgress}%</Label>
-                <div className="w-full bg-muted rounded-full h-2.5">
-                  <div className="bg-primary h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
-                </div>
-              </div>
-            )}
         </form>
       </DialogContent>
     </Dialog>
